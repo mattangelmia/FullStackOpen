@@ -4,75 +4,76 @@ import Total from './Total'
 import { useState } from 'react'
 import Buttons from "./Buttons"
 import Statistics from './Statistics'
-
+import Anecdote from './Anecdote'
+import Winner from './Winner'
 
 
 
 const App = () => {
-let goodText = "good"
-let badText = "bad"
-let neutralText = "neutral"
-
-const header = "give feedback"
-const [goodScore, setGoodScore] = useState(0)
-const [neutralScore, setNeutralScore] = useState(0)
-const [badScore, setBadScore] = useState(0)
-
- const goodFeedBack=()=>{
-  console.log("good!")
-  setGoodScore(goodScore+1)
-  
-
- }
-  
- const badFeedBack=()=>{
-  console.log("bad!")
-  setBadScore(badScore+1)
-
- }
-
- const neutralFeedBack=()=>{
-  console.log("neutral!")
-  setNeutralScore(neutralScore+1)
-
- }
-
-  let total =  goodScore + badScore + neutralScore
+  const anecdotes = [
+    'If it hurts, do it more often',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients'
+  ]
 
 
- const average = total / 3
+   
+  const [votes, setVotes] = useState(Array(7).fill(0))
+  const [selected, setSelected] = useState(0)
+  const [index, setHighestIndex] = useState(0)
+  const [winner, setWinner] = useState("")
+  const [highestNumber, setHighestNumber] = useState(0)
+  const randomIndex = Math.floor(Math.random() * anecdotes.length);
 
- const positiveAverage = total / goodScore  
+const getRandom = ()=>{
+const randomIndex = Math.floor(Math.random() * anecdotes.length);
+setSelected(randomIndex)
 
-const positiveAverageTotal = 100 / positiveAverage
+}
 
- console.log(positiveAverageTotal)
-  
-  
+
+const getWinner = () =>{
+let highest = Math.max(...votes) 
+let highestIndex=votes.indexOf(highest)
+console.log(highestIndex)
+console.log(highest)
+setWinner(anecdotes[highestIndex])
+setHighestNumber(highest)
+}
+
+
+
+const upVote = () => {
+const newVotes = [...votes]
+newVotes[selected] += 1
+setVotes(newVotes)
+console.log(votes)
+
+getWinner()
+
+
+}
 
   
   return (
+    
     <div>
-   <Header header={header}/>
-   <div style={{display: 'flex'}}>
-   <Buttons text={goodText} action={goodFeedBack}/>
-   <Buttons text={neutralText} action={neutralFeedBack}/>
-   <Buttons text={badText} action={badFeedBack}/>
-   
-   </div>
-
-<div>
-  <h3>Statistics</h3>
-  <Statistics text={goodText} score={goodScore}/>
-  <Statistics text={badText} score={badScore}/>
-  <Statistics text={neutralText} score={neutralScore}/>
-  <Statistics text="all" score={total}/>
-  <Statistics text="average" score={average}/>
-  <Statistics text="positive" score={positiveAverageTotal}/>
-
-</div>
-  
+  <Anecdote text={anecdotes[selected]} votes={votes[selected]}/>
+  <button onClick={getRandom}>Next anectdote</button>
+  <button onClick={upVote}>Vote</button>
+  <button onClick={getWinner}>Get highest </button>
+  <div>
+    <Winner leader={winner} voteCount={highestNumber}/>
+  </div>
     </div>
+  
+  
+
+
   )
 }
 
